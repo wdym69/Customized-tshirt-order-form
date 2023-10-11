@@ -1,62 +1,126 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Customized T-Shirt</title>
-</head>
-<body>
-  <center>
-  <h1>Customized T-Shirt Order Form</h1>
+<html>
+  <head>
+    <title>Custom T-shirt Order Form</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Custom T-shirt Order Form</h1>
 
-  <form action="" method="">
-    <label for="tagline">Tagline on the Shirt:</label><br>
-    <input type="text" id="tagline" name="tagline" required><br><br>
+    <form action="#" onsubmit="return validateForm();" 
+      <h2>Customize your T-shirts</h2>
+      <label for="tagline">Tagline</label>
+      <input type="text" id="tagline" placeholder="Enter a Tagline" name="tagline" />
+      <label for="color">Select a color:</label>
+      <input type="color" id="color" name="color" required />
+      <label for="size">Size:</label>
+      <select id="size" name="size">
+        <option value="Medium">Select Size</option>
+        <option value="Small">Small</option>
+        <option value="Medium">Medium</option>
+        <option value="Large">Large</option></select
+      ><br />
+      <label for="quantity">Quantity:</label>
+      <input type="number" id="quantity" name="quantity" min="1" required placeholder="Enter Quantity">
+      <label for="delivery-date">Delivery Date:</label>
+      <input type="date" id="delivery-date" name="delivery-date" required placeholder="Enter Delivery Date">
+      <h2>Contact Information</h2>
+      <label for="name">Full Name:</label>
+      <input type="text" id="name" name="name" placeholder="Enter your FullName" required /><br />
+      <label for="email">Email Address:</label>
+      <input type="email" id="email" name="email" placeholder="Enter your Email Address" required /><br />
+      <label for="phone">Phone Number:</label>
+      <input type="tel" id="phone" placeholder="Enter your Phone Number" name="phone" /><br />
+      <label for="address">Address:</label>
+      <textarea name="address" id="address" cols="30" rows="10" placeholder="Enter your Adddress"></textarea>
+      <!-- <h2>Shipping Information</h2>
+        <label for="address">Shipping Address:</label>
+        <input type="text" id="address" name="address" required><br>
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city" required><br>
+        <label for="state">State/Province:</label>
+        <input type="text" id="state" name="state" required><br>
+        <label for="zip">ZIP/Postal Code:</label>
+        <input type="text" id="zip" name="zip" required><br>
+        <label for="shipping_method">Shipping Method:</label>
+        <select id="shipping_method" name="shipping_method">
+            <option value="standard">Standard</option>
+            <option value="express">Express</option>
+        </select><br>
+        <label for="special_instructions">Special Shipping Instructions:</label>
+        <textarea id="special_instructions" name="special_instructions"></textarea><br> -->
 
-    <label for="color">Choose a color:</label><br>
-    <select id="color" name="color" required>
-      <option value="">Select a color</option>
-      <option value="red">Red</option>
-      <option value="blue">Blue</option>
-      <option value="green">Green</option>
-      <option value="black">Black</option>
-      <option value="grey">Grey</option>
-    </select><br><br>
+      <!-- Add more sections for t-shirt details, design customization, etc. -->
 
-    <label for="size">Size:</label><br>
-    <input type="radio" id="small" name="size" value="small" required>
-    <label for="small">Small</label>
-    <input type="radio" id="medium" name="size" value="medium" required>
-    <label for="medium">Medium</label>
-    <input type="radio" id="large" name="size" value="large" required>
-    <label for="large">Large</label>
+      <!-- <h2>Payment Information</h2>
+        <label for="payment_method">Payment Method:</label>
+        <select id="payment_method" name="payment_method">
+            <option value="credit_card">Credit Card</option>
+            <option value="paypal">PayPal</option>
+        </select><br> -->
 
-    <br><br>
+      <h2>Terms and Conditions</h2>
+      <label for="agree_terms">
+        <input type="checkbox" id="agree_terms" name="agree_terms" required />
+        I agree to the
+        <a href="terms_and_conditions.html" target="_blank"
+          >Terms and Conditions</a
+        > </label
+      ><br />
 
-    <label for="quantity">Quantity:</label><br>
-    <input type="number" id="quantity" name="quantity" min="1" value="1" required><br><br>
+      <input type="submit" value="Submit" />
+      <input type="reset" value="Reset Form" class="buttons" />
+    </form>
+    <script>
+      function validateForm() {
+        // Validation logic here
+        var tagline = document.getElementById("tagline").value;
+        var phone = document.getElementById("phone").value;
+        var quantity = document.getElementById("quantity").value;
 
-    <label for="delivery_date">Delivery Date:</label><br>
-    <input type="date" id="delivery_date" name="delivery_date" required><br><br>
+        // Check if tagline length is less than or equal to 100 characters
+        if (tagline.length > 100) {
+          alert("Tagline should be less than or equal to 100 characters.");
+          return false;
+        }
 
-    <label for="name">Full Name:</label><br>
-    <input type="text" id="name" name="name" required><br><br>
+        // Check if quantity is more than 0
+        if (quantity < 1 ) {
+          alert("Minimum quantity allowed is 1.");
+          return false;
+        } else if(quantity >= 100){
+          alert("Maximum quantity allowed is 100.")
+          return false;
+        }
 
-    <label for="phone">Phone Number:</label><br>
-    <input type="phone" id="phone" name="phone" required><br><br>
+        // Check if phone number has 9 digits
+        if (!/^\d{10}$/.test(phone)) {
+          alert("Please enter a valid 10-digit phone number.");
+          return false;
+        }
 
-    <label for="Email">Email id:</label><br>
-    <input type="email" id="email" name="email" required><br><br>
+        // If validation passes, you can proceed to generate the receipt
+        generateReceipt();
+        return false; // Prevent form submission for now
+      }
 
-    <label for="address">Address:</label><br>
-    <textarea id="address" name="address" rows="4" cols="50"></textarea><br><br>
+      function generateReceipt() {
+        var receiptDate = new Date().toLocaleDateString();
+        var receipt = `
+          Order Receipt
+          Date: ${receiptDate}
+          Tagline: ${document.getElementById("tagline").value}
+          Color: ${document.getElementById("color").value}
+          Size: ${document.getElementById("size").value}
+          Quantity: ${document.getElementById("quantity").value}
+          Delivery Date: ${document.getElementById("delivery-date").value}
+          Contact No: ${document.getElementById("phone").value}
+          Address: ${document.getElementById("address").value}
+        `;
 
-    
-
-    <input type="submit" value="Place Order">
-    <input type="reset" value="Reset">
-  </form>
-</center>
-
-</body>
+        // Display the receipt
+        alert(receipt);
+      }
+    </script>
+  </body>
 </html>
