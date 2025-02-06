@@ -1,129 +1,63 @@
 <!DOCTYPE html>
-<html>
-  <head>
-   
-    
-    <title>Custom T-shirt Order Form</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-3WKSP7CWJN"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebXR AR - Red Cone</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body style="margin: 0; overflow: hidden;">
+    <button id="start-ar" style="position: absolute; top: 10px; left: 10px; padding: 10px; font-size: 16px;">
+        Start AR
+    </button>
 
-  gtag('config', 'G-3WKSP7CWJN');
-</script>
-  
-  <body>
-    <h1>Custom T-shirt Order Form</h1>
-
-    <form action="#" onsubmit="return validateForm()">
-      <h2>Customize your T-shirts</h2>
-      <label for="tagline">Tagline</label>
-      <input type="text" id="tagline" placeholder="Enter a Tagline" name="tagline" />
-      <label for="color">Select a color:</label>
-      <input type="color" id="color" name="color" required />
-      <label for="size">Size:</label>
-      <select id="size" name="size">
-        <option value="Medium">Select Size</option>
-        <option value="Small">Small</option>
-        <option value="Medium">Medium</option>
-        <option value="Large">Large</option></select
-      ><br />
-      <label for="quantity">Quantity:</label>
-      <input type="number" id="quantity" name="quantity" min="1" required placeholder="Enter Quantity">
-      <label for="delivery-date">Delivery Date:</label>
-      <input type="date" id="delivery-date" name="delivery-date" required placeholder="Enter Delivery Date">
-      <h2>Contact Information</h2>
-      <label for="name">Full Name:</label>
-      <input type="text" id="name" name="name" placeholder="Enter your FullName" required /><br />
-      <label for="email">Email Address:</label>
-      <input type="email" id="email" name="email" placeholder="Enter your Email Address" required /><br />
-      <label for="phone">Phone Number:</label>
-      <input type="tel" id="phone" placeholder="Enter your Phone Number" name="phone" /><br />
-      <label for="address">Address:</label>
-      <textarea name="address" id="address" cols="30" rows="10" placeholder="Enter your Adddress"></textarea>
-      <!-- <h2>Shipping Information</h2>
-        <label for="address">Shipping Address:</label>
-        <input type="text" id="address" name="address" required><br>
-        <label for="city">City:</label>
-        <input type="text" id="city" name="city" required><br>
-        <label for="state">State/Province:</label>
-        <input type="text" id="state" name="state" required><br>
-        <label for="zip">ZIP/Postal Code:</label>
-        <input type="text" id="zip" name="zip" required><br>
-        <label for="shipping_method">Shipping Method:</label>
-        <select id="shipping_method" name="shipping_method">
-            <option value="standard">Standard</option>
-            <option value="express">Express</option>
-        </select><br>
-        <label for="special_instructions">Special Shipping Instructions:</label>
-        <textarea id="special_instructions" name="special_instructions"></textarea><br> -->
-
-      <!-- Add more sections for t-shirt details, design customization, etc. -->
-
-      <!-- <h2>Payment Information</h2>
-        <label for="payment_method">Payment Method:</label>
-        <select id="payment_method" name="payment_method">
-            <option value="credit_card">Credit Card</option>
-            <option value="paypal">PayPal</option>
-        </select><br> -->
-
-      <input type="submit" value="Submit" />
-      <input type="reset" value="Reset Form" class="buttons" />
-    </form>
     <script>
-      function validateForm() {
-        // Validation logic here
-        var tagline = document.getElementById("tagline").value;
-        var phone = document.getElementById("phone").value;
-        var quantity = document.getElementById("quantity").value;
+        let scene, camera, renderer;
 
-        // Check if tagline length is less than or equal to 100 characters
-        if (tagline.length > 100) {
-          alert("Tagline should be less than or equal to 100 characters.");
-          return false;
+        async function initAR() {
+            if (!navigator.xr) {
+                alert("WebXR is not supported on this browser. Please use Chrome on Android.");
+                return;
+            }
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.xr.enabled = true;
+            document.body.appendChild(renderer.domElement);
+
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            scene.add(camera);
+
+            // Add Light
+            const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+            scene.add(light);
+
+            // Create a Red Cone
+            const geometry = new THREE.ConeGeometry(0.1, 0.2, 32); // Radius, Height, Segments
+            const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+            const cone = new THREE.Mesh(geometry, material);
+            cone.position.set(0, 0, -0.5); // Place in front of the camera
+            scene.add(cone);
+
+            try {
+                const session = await navigator.xr.requestSession("immersive-ar", { requiredFeatures: ["hit-test"] });
+                renderer.xr.setSession(session);
+
+                // Reference space for placing objects
+                const xrRefSpace = await session.requestReferenceSpace("local");
+
+                renderer.setAnimationLoop(() => {
+                    renderer.render(scene, camera);
+                });
+
+            } catch (error) {
+                console.error("WebXR Error:", error);
+                alert("WebXR AR session not supported on this device.");
+            }
         }
 
-        // Check if quantity is more than 0
-        if (quantity < 1 ) {
-          alert("Minimum quantity allowed is 1.");
-          return false;
-        } else if(quantity >= 100){
-          alert("Maximum quantity allowed is 100.")
-          return false;
-        }
-
-        // Check if phone number has 9 digits
-        if (!/^\d{10}$/.test(phone)) {
-          alert("Please enter a valid 10-digit phone number.");
-          return false;
-        }
-
-        // If validation passes, you can proceed to generate the receipt
-        generateReceipt();
-        return false; // Prevent form submission for now
-      }
-
-      function generateReceipt() {
-        var receiptDate = new Date().toLocaleDateString();
-        var receipt = `
-          Order Receipt
-          Date: ${receiptDate}
-          Tagline: ${document.getElementById("tagline").value}
-          Color: ${document.getElementById("color").value}
-          Size: ${document.getElementById("size").value}
-          Quantity: ${document.getElementById("quantity").value}
-          Delivery Date: ${document.getElementById("delivery-date").value}
-          Contact No: ${document.getElementById("phone").value}
-          Address: ${document.getElementById("address").value}
-        `;
-
-        // Display the receipt
-        alert(receipt);
-      }
+        document.getElementById("start-ar").addEventListener("click", initAR);
     </script>
-  </body>
+</body>
 </html>
